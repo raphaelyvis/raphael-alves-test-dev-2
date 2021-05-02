@@ -4,7 +4,7 @@ import java.sql.Timestamp
 
 class TransacaoComConta {
 
-    Long ContaId
+    Long contaId
     Timestamp dataHoraTransacao
     BigDecimal valorTransacao
 
