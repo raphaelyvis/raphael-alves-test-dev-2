@@ -1,12 +1,14 @@
 package com.nitryx.backend.model
 
 import com.nitryx.backend.exceptions.SaldoNegativoException
+import groovy.util.logging.Slf4j
 import org.springframework.util.StringUtils
 
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
+@Slf4j
 @Entity
 class Conta {
 
@@ -66,8 +68,10 @@ class Conta {
     }
 
     void depositar(BigDecimal valor) {
-        if (isValido(valor))
+        if (isValido(valor)) {
             setTransacoes(new Transacao(valor))
+            log.info(String.format("Depósito de %.2f relizado na %s", valor, this.toString()))
+        }
     }
 
     void sacar(BigDecimal valor) {
@@ -77,12 +81,13 @@ class Conta {
 
             valor = valor * -1
             setTransacoes(new Transacao(valor))
+            log.info(String.format("Saque de %.2f relizado na %s", valor, this.toString()))
         }
     }
 
     private static Boolean isValido(BigDecimal valor) {
         if (valor <= 0 || valor == null) {
-            println "Valor não permitido para a transação"
+            log.error("Valor não permitido para a transação")
             return false
         }
         return true

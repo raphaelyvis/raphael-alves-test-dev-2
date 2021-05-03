@@ -42,45 +42,19 @@ class BootstrapRunner implements ApplicationRunner {
         criarConta(contaRaphael)
         criarConta(contaMaria)
 
-        depositar(contaRaphael, BigDecimal.valueOf(10))
-        depositar(contaMaria, BigDecimal.valueOf(25))
+        contaRaphael.depositar(BigDecimal.valueOf(10))
+        contaMaria.depositar(BigDecimal.valueOf(25))
 
-        sacar(contaMaria, BigDecimal.valueOf(24.99 as double))
+        contaMaria.sacar(BigDecimal.valueOf(24.99 as double))
 
         transferencia.transferir(contaRaphael.getId(), contaMaria.getId(), BigDecimal.valueOf(5))
 
     }
 
     private void criarConta(Conta conta) {
-        if (exists(conta)) {
+        if (!StringUtils.isEmpty(conta)) {
             contaRepository.save(conta)
             log.info(String.format("%s criada na base de dados!", conta))
         }
-    }
-
-    private static void depositar(Conta conta, BigDecimal valor) {
-        if (exists(conta) && isValido(valor)) {
-            conta.depositar(valor)
-            log.info(String.format("Depósito de %.2f relizado na %s", valor, conta))
-        }
-    }
-
-    private static void sacar(Conta conta, BigDecimal valor) {
-        if (exists(conta) && isValido(valor)) {
-            conta.sacar(valor)
-            log.info(String.format("Saque de %.2f relizado na %s", valor, conta))
-        }
-    }
-
-    private static Boolean exists(Conta conta) {
-        return !StringUtils.isEmpty(conta)
-    }
-
-    private static Boolean isValido(BigDecimal valor) {
-        if (valor <= 0 || valor == null) {
-            println "Valor não permitido para a transação"
-            return false
-        }
-        return true
     }
 }
