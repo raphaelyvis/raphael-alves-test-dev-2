@@ -1,6 +1,7 @@
 package com.nitryx.backend.model
 
 import com.nitryx.backend.exceptions.SaldoNegativoException
+import org.springframework.util.StringUtils
 
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
@@ -9,7 +10,8 @@ import javax.validation.constraints.NotNull
 @Entity
 class Conta {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id
     @NotBlank
     private String numeroAgencia
@@ -58,21 +60,32 @@ class Conta {
         return transacoes
     }
 
-    void setTransacoes(Transacao transacao) {
+    private void setTransacoes(Transacao transacao) {
         this.transacoes.add(transacao)
         this.saldo = getSaldo() + transacao.getValor()
     }
 
     void depositar(BigDecimal valor) {
-        setTransacoes(new Transacao(valor))
+        if (isValido(valor))
+            setTransacoes(new Transacao(valor))
     }
 
     void sacar(BigDecimal valor) {
-        if (valor > getSaldo())
-            throw new SaldoNegativoException("O saldo não pode ser negativo")
+        if (isValido(valor)) {
+            if (valor > getSaldo())
+                throw new SaldoNegativoException("O saldo não pode ser negativo")
 
-        valor = valor * -1
-        setTransacoes(new Transacao(valor))
+            valor = valor * -1
+            setTransacoes(new Transacao(valor))
+        }
+    }
+
+    private static Boolean isValido(BigDecimal valor) {
+        if (valor <= 0 || StringUtils.isEmpty(valor)) {
+            println "Valor não permitido para a transação"
+            return false
+        }
+        return true
     }
 
     @Override
