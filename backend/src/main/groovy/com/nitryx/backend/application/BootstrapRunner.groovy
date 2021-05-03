@@ -59,14 +59,14 @@ class BootstrapRunner implements ApplicationRunner {
     }
 
     private static void depositar(Conta conta, BigDecimal valor) {
-        if (exists(conta)) {
+        if (exists(conta) && isValido(valor)) {
             conta.depositar(valor)
             log.info(String.format("Depósito de %.2f relizado na %s", valor, conta))
         }
     }
 
     private static void sacar(Conta conta, BigDecimal valor) {
-        if (exists(conta)) {
+        if (exists(conta) && isValido(valor)) {
             conta.sacar(valor)
             log.info(String.format("Saque de %.2f relizado na %s", valor, conta))
         }
@@ -74,5 +74,13 @@ class BootstrapRunner implements ApplicationRunner {
 
     private static Boolean exists(Conta conta) {
         return !StringUtils.isEmpty(conta)
+    }
+
+    private static Boolean isValido(BigDecimal valor) {
+        if (valor <= 0 || valor == null) {
+            println "Valor não permitido para a transação"
+            return false
+        }
+        return true
     }
 }

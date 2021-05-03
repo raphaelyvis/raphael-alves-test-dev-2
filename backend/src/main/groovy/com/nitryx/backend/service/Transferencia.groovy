@@ -47,7 +47,7 @@ class Transferencia {
     }
 
     private static Boolean isValido(BigDecimal valor) {
-        if(valor <=0 || StringUtils.isEmpty(valor)) {
+        if(valor <=0 || valor == null) {
             println "Valor não permitido para a transação"
             return false
         }
