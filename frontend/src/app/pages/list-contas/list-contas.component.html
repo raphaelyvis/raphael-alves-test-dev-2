@@ -1,0 +1,32 @@
+<div class="container">
+    <div class="card list-contas">
+      <div class="card-body">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Agência</th>
+                <th scope="col">Número</th>
+                <th scope="col">Saldo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let conta of contas">
+                <td>{{conta.contaId}}</td>
+                <td>
+                  <a [title]="'Transações de ' + conta.nomeCliente"
+                    [routerLink]="['/transacoes', conta.contaId]"
+                  >
+                    {{conta.nomeCliente}}
+                  </a>
+                </td>
+                <td>{{conta.numeroAgencia}}</td>
+                <td>{{conta.numeroConta}}</td>
+                <td>{{conta.saldo | currency}}</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+    </div>
+  </div>
